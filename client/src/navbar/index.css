@@ -1,0 +1,43 @@
+nav {
+  display: flex;
+  width: 40rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+}
+
+nav > .nav-section {
+  display: flex;
+  border: 3px solid rgb(255, 255, 255, 0.201);
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button,
+h1 {
+  font-family: "Rubik", sans-serif;
+  font-weight: 400;
+  color: white;
+}
+
+button {
+  background-color: var(--background-color);
+  font-size: larger;
+}
+
+button:hover {
+  border: 3px solid rgba(244, 227, 73, 0.534);
+  color: rgba(244, 227, 73, 0.758);
+}
+
+#nav-home,
+#nav-title,
+#nav-login {
+  flex: 1;
+}
