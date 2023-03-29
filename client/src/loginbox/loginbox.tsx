@@ -7,8 +7,8 @@ import "./index.css";
 interface AppProps {
   appState: string;
   setAppState: Dispatch<SetStateAction<string>>;
-  isLoggedIn: boolean;
-  setIsLoggedIn: Dispatch<SetStateAction<boolean>>;
+  userID: string;
+  setUserID: Dispatch<SetStateAction<string>>;
 }
 
 const ADD_USER = gql`
@@ -22,7 +22,7 @@ const ADD_USER = gql`
 `;
 
 function LoginBoxContent(props: AppProps) {
-  const { appState, setAppState, isLoggedIn, setIsLoggedIn } = props;
+  const { appState, setAppState, userID, setUserID } = props;
 
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -32,7 +32,7 @@ function LoginBoxContent(props: AppProps) {
       console.log("Error creating user", error);
     },
     onCompleted: (data) => {
-      console.log("User created", data.createUser.name);
+      setUserID(data.createUser.id);
     },
   });
 
@@ -41,14 +41,11 @@ function LoginBoxContent(props: AppProps) {
     addUser({ variables: { input: { name, password } } });
     setName("");
     setPassword("");
+    sendHome();
   };
 
   function sendHome() {
     setAppState("home");
-  }
-
-  function toggleLoginState() {
-    setIsLoggedIn(true);
   }
 
   return (

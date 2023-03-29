@@ -6,13 +6,13 @@ import LoginBox from "./loginbox";
 
 function App() {
   const [appState, setAppState] = useState("home");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userID, setUserID] = useState("");
 
   const AppProps = {
     appState: appState,
     setAppState: setAppState,
-    isLoggedIn: isLoggedIn,
-    setIsLoggedIn: setIsLoggedIn,
+    userID: userID,
+    setUserID: setUserID,
   };
 
   function renderContent() {

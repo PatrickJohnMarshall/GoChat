@@ -4,8 +4,18 @@ type User {
   password: String!
 }
 
+type Message {
+  id: ID!
+  text: String!
+  userID: ID!
+}
+
 type Query {
-  users: [User!]!
+  getUsers: [User!]!
+  getUserID(id: ID!): User!
+  getMessages: [Message!]!
+  getUserMessages(userID: ID!): [Message!]!
+  getMessage(id: ID!): Message!
 }
 
 input NewUser {
@@ -13,6 +23,12 @@ input NewUser {
   password: String!
 }
 
+input NewMessage {
+  text: String!
+  userID: ID!
+}
+
 type Mutation {
   createUser(input: NewUser!): User!
+  createMessage(input: NewMessage!): Message!
 }
