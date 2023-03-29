@@ -2,6 +2,17 @@
 
 package model
 
+type Message struct {
+	ID     string `json:"id"`
+	Text   string `json:"text"`
+	UserID string `json:"userID"`
+}
+
+type NewMessage struct {
+	Text   string `json:"text"`
+	UserID string `json:"userID"`
+}
+
 type NewUser struct {
 	Name     string `json:"name"`
 	Password string `json:"password"`

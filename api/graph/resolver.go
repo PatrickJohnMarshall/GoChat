@@ -7,5 +7,6 @@ import "GoChat/api/graph/model"
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 type Resolver struct {
-	users []*model.User
+	users    []*model.User
+	messages []*model.Message
 }

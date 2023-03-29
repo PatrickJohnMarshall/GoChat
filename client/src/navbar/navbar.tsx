@@ -1,15 +1,17 @@
+import { useQuery, gql } from "@apollo/client";
 import "./index.css";
-import { SetStateAction, Dispatch } from "react";
+import { CurrentUser } from "../helpers";
+import { SetStateAction, Dispatch, useEffect, useState } from "react";
 
 interface AppProps {
   appState: string;
   setAppState: Dispatch<SetStateAction<string>>;
-  isLoggedIn: boolean;
-  setIsLoggedIn: Dispatch<SetStateAction<boolean>>;
+  userID: string;
+  setUserID: Dispatch<SetStateAction<string>>;
 }
 
 function NavBarContent(props: AppProps) {
-  const { appState, setAppState, isLoggedIn, setIsLoggedIn } = props;
+  const { appState, setAppState, userID, setUserID } = props;
 
   function goToLogin() {
     setAppState("login");
@@ -19,8 +21,12 @@ function NavBarContent(props: AppProps) {
     setAppState("home");
   }
 
-  function toggleLoginState() {
-    setIsLoggedIn(false);
+  function isLoggedIn() {
+    if (userID === "") {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   return (
@@ -35,20 +41,16 @@ function NavBarContent(props: AppProps) {
         Home
       </button>
       <div id="nav-title" className="nav-section">
-        <h1>GoChat</h1>
+        <h1>GoChat {CurrentUser(userID)}</h1>
       </div>
       <button
         id="nav-login"
         className="nav-section"
         onClick={() => {
-          if (isLoggedIn) {
-            toggleLoginState();
-          } else {
-            goToLogin();
-          }
+          isLoggedIn() ? setUserID("") : goToLogin();
         }}
       >
-        {isLoggedIn ? `Log Out` : `Login`}
+        {isLoggedIn() ? `Log Out` : `Login`}
       </button>
     </nav>
   );

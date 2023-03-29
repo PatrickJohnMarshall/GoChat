@@ -24,9 +24,55 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 	return user, nil
 }
 
-// Users is the resolver for the users field.
-func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
+// CreateMessage is the resolver for the createMessage field.
+func (r *mutationResolver) CreateMessage(ctx context.Context, input model.NewMessage) (*model.Message, error) {
+	rand, _ := rand.Int(rand.Reader, big.NewInt(100))
+	message := &model.Message{
+		ID:     fmt.Sprintf("M%d", rand),
+		Text:   input.Text,
+		UserID: input.UserID,
+	}
+	r.messages = append(r.messages, message)
+	return message, nil
+}
+
+// GetUsers is the resolver for the getUsers field.
+func (r *queryResolver) GetUsers(ctx context.Context) ([]*model.User, error) {
 	return r.users, nil
+}
+
+// GetUserID is the resolver for the getUserID field.
+func (r *queryResolver) GetUserID(ctx context.Context, id string) (*model.User, error) {
+	user, err := FindUserByID(r.users, id)
+	if err != nil {
+		return nil, err
+	}
+	return &model.User{
+		Name: user.Name,
+	}, nil
+}
+
+// GetMessages is the resolver for the getMessages field.
+func (r *queryResolver) GetMessages(ctx context.Context) ([]*model.Message, error) {
+	return r.messages, nil
+}
+
+// GetUserMessages is the resolver for the getUserMessages field.
+func (r *queryResolver) GetUserMessages(ctx context.Context, userID string) ([]*model.Message, error) {
+	messages, err := FindUserMessages(r.messages, userID)
+	if err != nil {
+		return nil, err
+	}
+	return messages, nil
+}
+
+// GetMessage is the resolver for the getMessage field.
+func (r *queryResolver) GetMessage(ctx context.Context, id string) (*model.Message, error) {
+	message, err := FindMessageByID(r.messages, id)
+	if err != nil {
+		return nil, err
+	}
+	return message, nil
 }
 
 // Mutation returns MutationResolver implementation.
@@ -37,3 +83,13 @@ func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//     it when you're done.
+//   - You have helper methods in this file. Move them out to keep these resolver files clean.
+func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
+	return r.users, nil
+}
