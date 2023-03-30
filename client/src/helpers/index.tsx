@@ -9,14 +9,13 @@ const GET_CURRENT_USER = gql`
 `;
 
 export function CurrentUser(userID: string) {
-  console.log(userID);
   const { loading, error, data } = useQuery(GET_CURRENT_USER, {
     variables: { id: userID },
   });
 
-  if (userID === "") return;
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error</p>;
+  if (userID === "") return "Guest";
+  if (loading) return "Loading...";
+  if (error) return "Error";
 
-  return <p>User: {data.getUserID.name}</p>;
+  return `${data.getUserID.name}`;
 }

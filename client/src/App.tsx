@@ -17,7 +17,7 @@ function App() {
 
   function renderContent() {
     if (appState === "home") {
-      return <Home />;
+      return <Home {...AppProps} />;
     }
 
     if (appState === "login") {
