@@ -1,4 +1,4 @@
-import HomeContent from "./home";
+import ChatContent from "./chatbox";
 import { SetStateAction, Dispatch } from "react";
 
 interface AppProps {
@@ -8,7 +8,7 @@ interface AppProps {
   setUserID: Dispatch<SetStateAction<string>>;
 }
 
-export default function Home(props: AppProps) {
+export default function Chatroom(props: AppProps) {
   const { appState, setAppState, userID, setUserID } = props;
 
   const AppProps = {
@@ -18,5 +18,5 @@ export default function Home(props: AppProps) {
     setUserID: setUserID,
   };
 
-  return <HomeContent {...AppProps} />;
+  return <ChatContent {...AppProps} />;
 }
