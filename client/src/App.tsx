@@ -3,6 +3,7 @@ import { useState } from "react";
 import NavBar from "./navbar";
 import Home from "./home";
 import LoginBox from "./loginbox";
+import Chatroom from "./chatroom";
 
 function App() {
   const [appState, setAppState] = useState("home");
@@ -22,6 +23,10 @@ function App() {
 
     if (appState === "login") {
       return <LoginBox {...AppProps} />;
+    }
+
+    if (appState === "chatroom") {
+      return <Chatroom {...AppProps} />;
     }
   }
 
