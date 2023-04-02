@@ -41,7 +41,7 @@ function NavBarContent(props: AppProps) {
         Home
       </button>
       <div id="nav-title" className="nav-section">
-        <h1>GoChat | {CurrentUser(userID)}</h1>
+        <h1>GoChat</h1>
       </div>
       <button
         id="nav-login"

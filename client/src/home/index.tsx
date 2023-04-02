@@ -1,4 +1,5 @@
-import HomeContent from "./home";
+import GuestHomeContent from "./guestHome";
+import UserHomeContent from "./userHome";
 import { SetStateAction, Dispatch } from "react";
 
 interface AppProps {
@@ -18,5 +19,10 @@ export default function Home(props: AppProps) {
     setUserID: setUserID,
   };
 
-  return <HomeContent {...AppProps} />;
+  switch (userID) {
+    case "":
+      return <GuestHomeContent {...AppProps} />;
+    default:
+      return <UserHomeContent {...AppProps} />;
+  }
 }

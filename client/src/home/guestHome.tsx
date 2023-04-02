@@ -8,25 +8,16 @@ interface AppProps {
   setUserID: Dispatch<SetStateAction<string>>;
 }
 
-export default function HomeContent(props: AppProps) {
+export default function GuestHomeContent(props: AppProps) {
   const { appState, setAppState, userID, setUserID } = props;
-
-  function createChat() {
-    setAppState("chatroom");
-  }
 
   return (
     <div className="home-box">
-      <div className="list-box">Friends</div>
-      <div className="list-box">
-        <button
-          className="home-button"
-          onClick={() => {
-            createChat();
-          }}
-        >
-          Create Chat
-        </button>
+      <div className="guest-box">
+        <h1 className="guest-title">Welcome to GoChat!</h1>
+        <p>To get started chatting, create an account.</p>
+        <p>You can create a chat on your own with an account.</p>
+        <p>Or create one with a friend through the friends list.</p>
       </div>
     </div>
   );
