@@ -32,7 +32,11 @@ func (r *mutationResolver) CreateMessage(ctx context.Context, input model.NewMes
 		Text:   input.Text,
 		UserID: input.UserID,
 	}
+
 	r.messages = append(r.messages, message)
+
+	messageChan <- r.messages
+
 	return message, nil
 }
 
@@ -47,6 +51,7 @@ func (r *queryResolver) GetUserID(ctx context.Context, id string) (*model.User, 
 	if err != nil {
 		return nil, err
 	}
+
 	return &model.User{
 		Name: user.Name,
 	}, nil
@@ -75,14 +80,23 @@ func (r *queryResolver) GetMessage(ctx context.Context, id string) (*model.Messa
 	return message, nil
 }
 
+// GetMessage is the resolver for the getMessage field.
+func (r *subscriptionResolver) GetMessage(ctx context.Context) (<-chan []*model.Message, error) {
+	return messageChan, nil
+}
+
 // Mutation returns MutationResolver implementation.
 func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
+// Subscription returns SubscriptionResolver implementation.
+func (r *Resolver) Subscription() SubscriptionResolver { return &subscriptionResolver{r} }
+
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
+type subscriptionResolver struct{ *Resolver }
 
 // !!! WARNING !!!
 // The code below was going to be deleted when updating resolvers. It has been copied here so you have

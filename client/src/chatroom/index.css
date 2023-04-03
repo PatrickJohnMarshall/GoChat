@@ -1,0 +1,61 @@
+.chat-box {
+  width: 100%;
+  height: 100%;
+
+  background-color: rgba(37, 33, 97, 0.514);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+}
+
+.message-box {
+  width: 100%;
+  height: 60em;
+
+  /* border: 5px solid rgb(255, 255, 255, 0.201); */
+  padding: 1rem;
+
+  border-radius: 5px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  align-items: end;
+}
+
+.submit-box {
+  width: 100%;
+  height: 5em;
+
+  border-top: 5px solid rgba(255, 255, 255, 0.212);
+  padding: 1rem;
+  /* margin-bottom: 2rem; */
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.user-input {
+  width: 40rem;
+  margin-left: 3rem;
+}
+
+.user-name {
+  border: 3px solid rgb(255, 255, 255, 0.201);
+  background-color: rgb(255, 255, 255, 0.201);
+  padding: 0.25em 0.75em;
+  border-radius: 3px;
+}
+
+.messages {
+  border: 3px solid rgb(255, 255, 255, 0.201);
+  background-color: rgb(255, 255, 255, 0.201);
+  padding: 0.25em 0.75em;
+  border-radius: 3px;
+}
