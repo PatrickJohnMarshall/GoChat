@@ -1,6 +1,8 @@
 import { CurrentUser } from "../helpers";
 import { SetStateAction, Dispatch, createRef, FormEvent } from "react";
-import { useMutation, gql, useQuery } from "@apollo/client";
+import { useMutation, gql, useQuery, useSubscription } from "@apollo/client";
+
+import "./index.css";
 
 interface AppProps {
   appState: string;
@@ -19,9 +21,9 @@ const ADD_MESSAGE = gql`
   }
 `;
 
-const GET_MESSAGES = gql`
-  query getMessages {
-    getMessages {
+const GET_MESSAGES_SUB = gql`
+  subscription {
+    getMessage {
       id
       text
       userID
@@ -40,9 +42,9 @@ export default function ChatContent(props: AppProps) {
       onError: (error) => {
         console.log("Error creating message", error);
       },
-      onCompleted: (inputMessage) => {
-        console.log(inputMessage.createMessage.text);
-      },
+      // onCompleted: (inputMessage) => {
+      //   console.log(inputMessage.createMessage.text);
+      // },
     }
   );
 
@@ -55,29 +57,31 @@ export default function ChatContent(props: AppProps) {
     }
   };
 
-  const { data: allMessages } = useQuery(GET_MESSAGES);
-
-  const messageArr = allMessages?.getMessages;
-
-  function printMessages() {
-    let messageBlock = [];
-
-    for (let i = 0; i < messageArr?.length; i++) {
-      messageBlock.push(<p>{messageArr[i].text}</p>);
-    }
-
-    return messageBlock;
-  }
+  const { data: subData } = useSubscription(GET_MESSAGES_SUB, {
+    onError: (error) => {
+      console.log(error);
+    },
+    onComplete: () => {
+      console.log(subData);
+    },
+  });
 
   return (
-    <div>
-      <p>Hello {CurrentUser(userID)}</p>
-      <button>Open Chat</button>
-      <form onSubmit={handleSubmit}>
-        <input type="text" ref={textRef} />
-        <input type="submit" style={{ display: "none" }} />
-      </form>
-      {printMessages()}
+    <div className="chat-box">
+      <div className="message-box">
+        {subData?.getMessage?.map((message: any) => (
+          <p className="messages" key={message.id}>
+            {message.text}
+          </p>
+        ))}
+      </div>
+      <div className="submit-box">
+        <form onSubmit={handleSubmit}>
+          <label className="user-name">{CurrentUser(userID)}</label>
+          <input className="user-input" type="text" ref={textRef} />
+          <input type="submit" style={{ display: "none" }} />
+        </form>
+      </div>
     </div>
   );
 }

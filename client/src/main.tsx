@@ -2,12 +2,52 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 
-import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  split,
+  HttpLink,
+} from "@apollo/client";
+import { getMainDefinition } from "@apollo/client/utilities";
+import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
+import { createClient } from "graphql-ws";
 
 import "./index.css";
 
+const httpLink = new HttpLink({
+  uri: "/graphql",
+});
+
+const wsLink = new GraphQLWsLink(
+  createClient({
+    url: `ws://${window.location.host}/graphql`,
+    lazy: true,
+    on: {
+      connected: () => {
+        console.log("connected");
+      },
+      error: (e) => {
+        console.log(e);
+      },
+    },
+  })
+);
+
+const splitLink = split(
+  ({ query }) => {
+    const definition = getMainDefinition(query);
+    return (
+      definition.kind === "OperationDefinition" &&
+      definition.operation === "subscription"
+    );
+  },
+  wsLink,
+  httpLink
+);
+
 const client = new ApolloClient({
-  uri: "http://localhost:4000/graphql",
+  link: splitLink,
   cache: new InMemoryCache(),
 });
 
