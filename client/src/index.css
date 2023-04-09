@@ -1,5 +1,6 @@
 :root {
   --background-color: rgba(12, 17, 38, 0.955);
+  overflow: hidden;
 }
 
 body {
@@ -12,11 +13,13 @@ body {
   height: 100vh;
   width: 100%;
   display: flex;
+  overflow: hidden;
   flex-direction: column;
   align-items: center;
 }
 
 .feature-box {
+  overflow: hidden;
   flex-grow: 1;
   width: 100%;
   display: flex;
@@ -26,6 +29,7 @@ body {
 
 .content-box {
   position: center;
+  overflow: hidden;
   width: 55em;
   height: 65em;
   border: 5px solid rgb(255, 255, 255, 0.201);

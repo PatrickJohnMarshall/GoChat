@@ -36,17 +36,12 @@ export default function ChatContent(props: AppProps) {
 
   const textRef = createRef<HTMLInputElement>();
 
-  const [addMessage, { data: inputMessage, error, loading }] = useMutation(
-    ADD_MESSAGE,
-    {
-      onError: (error) => {
-        console.log("Error creating message", error);
+  const [addMessage, { data: inputMessage, error: messageError, loading }] =
+    useMutation(ADD_MESSAGE, {
+      onError: () => {
+        console.log("Error creating message", messageError);
       },
-      // onCompleted: (inputMessage) => {
-      //   console.log(inputMessage.createMessage.text);
-      // },
-    }
-  );
+    });
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -57,14 +52,16 @@ export default function ChatContent(props: AppProps) {
     }
   };
 
-  const { data: subData } = useSubscription(GET_MESSAGES_SUB, {
-    onError: (error) => {
-      console.log(error);
+  const { data: subData, error: subError } = useSubscription(GET_MESSAGES_SUB, {
+    onError: () => {
+      console.log(subError);
     },
     onComplete: () => {
       console.log(subData);
     },
   });
+
+  console.log(subData);
 
   return (
     <div className="chat-box">

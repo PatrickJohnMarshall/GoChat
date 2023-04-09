@@ -1,104 +1,55 @@
 package main
 
 import (
-	"database/sql"
-	"fmt"
+	"GoChat/api/graph"
+	"log"
+	"net/http"
+	"os"
+	"time"
 
-	"github.com/joho/godotenv"
+	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/handler/extension"
+	"github.com/99designs/gqlgen/graphql/handler/transport"
+	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/go-chi/chi"
+	"github.com/gorilla/websocket"
+	"github.com/rs/cors"
 )
 
-var db *sql.DB
+const defaultPort = "4000"
 
-type User struct {
-	ID       int    `json:"id"`
-	Name     string `json:"userName"`
-	Password string `json:"userPassword"`
-}
+func main() {
+	r := chi.NewRouter()
 
-func init() {
-	err := godotenv.Load(".env")
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://127.0.0.1:5000", "http://localhost:4000", "http://localhost:9092"},
+		AllowCredentials: true,
+		Debug:            false,
+	})
 
-	if err != nil {
-		fmt.Println("Error loading .env file")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = defaultPort
 	}
+
+	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
+
+	srv.AddTransport(&transport.Websocket{
+		KeepAlivePingInterval: 10 * time.Second,
+		Upgrader: websocket.Upgrader{
+			CheckOrigin: func(r *http.Request) bool {
+				return true
+			},
+			ReadBufferSize:  1024,
+			WriteBufferSize: 1024,
+		},
+	})
+	srv.Use(extension.Introspection{})
+
+	r.Handle("/playground", playground.Handler("GraphQL playground", "/graphql"))
+	r.Handle("/graphql", c.Handler(srv))
+
+	log.Printf("connect to http://localhost:%s/playground for GraphQL playground", port)
+	log.Fatal(http.ListenAndServe(":"+port, r))
+
 }
-
-// func main() {
-// 	fmt.Print("Hello World")
-
-// 	app := fiber.New()
-
-// 	app.Use(cors.New(cors.Config{
-// 		AllowOrigins: "http://127.0.0.1:5173",
-// 		AllowHeaders: "Origin, Content-Type, Accept",
-// 	}))
-
-// 	users := []User{}
-
-// 	app.Get("/healthcheck", func(c *fiber.Ctx) error {
-// 		return c.SendString("OK")
-// 	})
-
-// 	app.Post("/api/users", func(c *fiber.Ctx) error {
-// 		user := &User{}
-
-// 		if err := c.BodyParser(user); err != nil {
-// 			return err
-// 		}
-
-// 		user.ID = len(users) + 1
-
-// 		users = append(users, *user)
-
-// 		return c.JSON(users)
-// 	})
-
-// 	app.Patch("/api/users/:id/logged-in", func(c *fiber.Ctx) error {
-// 		id, err := c.ParamsInt("id")
-
-// 		if err != nil {
-// 			return c.Status(401).SendString("Invalid ID")
-// 		}
-
-// 		for i, t := range users {
-// 			if t.ID == id {
-// 				users[i].LoggedIn = true
-// 				break
-// 			}
-// 		}
-// 		return c.JSON(users)
-// 	})
-
-// 	log.Fatal(app.Listen(":4000"))
-// }
-
-// func main() {
-// 	dbUsername := os.Getenv("DB_USER")
-// 	dbPassword := os.Getenv("DB_PASS")
-// 	dbNet := os.Getenv("DB_NET")
-// 	dbAddr := os.Getenv("DB_ADDR")
-// 	dbName := os.Getenv("DB_NAME")
-
-// 	cfg := mysql.Config{
-// 		User:   dbUsername,
-// 		Passwd: dbPassword,
-// 		Net:    dbNet,
-// 		Addr:   dbAddr,
-// 		DBName: dbName,
-// 	}
-
-// 	db, err := sql.Open("mysql", cfg.FormatDSN())
-// 	if err != nil {
-// 		fmt.Println("error validating sql.Open arguments")
-// 		panic(err.Error())
-// 	}
-// 	defer db.Close()
-
-// 	err = db.Ping()
-// 	if err != nil {
-// 		panic(err.Error())
-// 	}
-// 	fmt.Println("Connected to the database")
-
-// 	fmt.Println("Success")
-// }
