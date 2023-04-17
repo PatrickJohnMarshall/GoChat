@@ -6,6 +6,7 @@ package graph
 
 import (
 	"GoChat/api/graph/model"
+	"GoChat/api/kafka"
 	"context"
 	"crypto/rand"
 	"fmt"
@@ -35,7 +36,11 @@ func (r *mutationResolver) CreateMessage(ctx context.Context, input model.NewMes
 
 	r.messages = append(r.messages, message)
 
-	messageChan <- r.messages
+	kafka.MessageProducer(message.Text)
+
+	msgs, nil := kafka.MessageConsumer()
+
+	messageChan <- msgs
 
 	return message, nil
 }
@@ -82,6 +87,7 @@ func (r *queryResolver) GetMessage(ctx context.Context, id string) (*model.Messa
 
 // GetMessage is the resolver for the getMessage field.
 func (r *subscriptionResolver) GetMessage(ctx context.Context) (<-chan []*model.Message, error) {
+
 	return messageChan, nil
 }
 
